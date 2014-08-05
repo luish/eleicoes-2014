@@ -32,7 +32,7 @@ class PartidosHTMLParser(HTMLParser):
 
     def handle_data(self, data):
         if self.lasttag == 'td' or (self.lasttag == 'strong' and len(remove_spaces(data)) > 1) or self.lasttag == 'a' or self.lasttag == 'span' \
-         or (self.lasttag == 'div' and 'align' in self.lastattrs):
+         :
 
             #if 'align' in self.lastattrs:
             #    print self.lastattrs
@@ -50,24 +50,39 @@ class PartidosHTMLParser(HTMLParser):
 def remove_spaces(string):
     return re.sub(' +', ' ', string)
 
-def create_json(array):
+def create_item_dict(array):
+    dic = {}
     if (len(array) == 6):
-        return json.dumps(array)
+        dic = {
+            'id': int(array[0]),
+            'sigla': array[1],
+            'name': array[2],
+            'deferimento': array[3],
+            'presidente_nacional': array[4],
+            'numero': array[5]
+        }
+
+        return dic;
+
     return None
+
+def create_json(array):
+    partidos = []
+    for partido in array:
+        dic = create_item_dict(partido)
+        if dic:
+            partidos.append(dic)
+
+    return json.dumps(partidos)
 
 def get_partidos():
     url = urllib.urlopen('http://www.tse.jus.br/partidos/partidos-politicos/registrados-no-tse')
     parser = PartidosHTMLParser()
     data = parser.parse(url)
-
-    pp = pprint.PrettyPrinter(indent=4)
-
-    for partido in data:
-        p = create_json(partido)
-        pp.pprint(p)
+    return create_json(data)
 
 if __name__ == '__main__':
-    get_partidos()
+    print get_partidos()
     
 
     
