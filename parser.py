@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from HTMLParser import HTMLParser
-import urllib
+import urllib, urllib2
 import re
 import json
 import pprint
@@ -56,9 +56,9 @@ def create_item_dict(array):
         dic = {
             'id': int(array[0]),
             'sigla': array[1],
-            'name': array[2],
+            'name': array[2].decode('utf-8').lower().title(),
             'deferimento': array[3],
-            'presidente_nacional': array[4],
+            'presidente_nacional': array[4].decode('utf-8').lower().title(),
             'numero': array[5]
         }
 
@@ -82,7 +82,7 @@ def get_partidos():
     return create_json(data)
 
 if __name__ == '__main__':
-    print get_partidos()
-    
+    partidos = get_partidos()
+    print partidos
 
     
