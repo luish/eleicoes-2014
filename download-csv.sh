@@ -5,6 +5,7 @@
 # Command: iconv -f ISO-8859-1 -t utf-8 old-file.csv > new-file.csv
 
 folder="data/candidatos/csv/"
+temp="/tmp/temp.csv"
 
 estados="AC AL AP AM BA CE DF ES GO MA MT MS MG PA PB PR PE PI RJ RN RS RO RR SC SP SE TO"
 cargos=("gov" "vice_gov" "sen" "sen_sup_1" "sen_sup_2" "dep_fed" "dep_est")
@@ -27,12 +28,20 @@ do
         url=$(build_url ${estado} ${cargos_ids[$i]})
         i=$(expr $i + 1)
 
-        curl -s -o $filename $url
-        
+        curl -s -o $temp $url
+        iconv -f ISO-8859-1 -t utf-8 $temp > $filename
+
         echo "Saved file $filename"
     done
 done
 
 # BR
-curl -s -o "${folder}BR/presidente.csv" $(build_url BR 1)
-curl -s -o "${folder}BR/vice-presidente.csv" $(build_url BR 2)
+mkdir -p "${folder}BR"
+
+curl -s -o $temp $(build_url BR 1)
+iconv -f ISO-8859-1 -t utf-8 $temp > "${folder}BR/presidente.csv"
+
+curl -s -o $temp $(build_url BR 2)
+iconv -f ISO-8859-1 -t utf-8 $temp > "${folder}BR/vice-presidente.csv"
+
+rm $temp
