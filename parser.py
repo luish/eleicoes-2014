@@ -56,7 +56,7 @@ def create_item_dict(array):
         dic = {
             'id': int(array[0]),
             'sigla': array[1],
-            'name': array[2].decode('utf-8').lower().title(),
+            'nome': array[2].decode('utf-8').lower().title(),
             'deferimento': array[3],
             'presidente_nacional': array[4].decode('utf-8').lower().title(),
             'numero': array[5]
@@ -80,9 +80,4 @@ def get_partidos():
     parser = PartidosHTMLParser()
     data = parser.parse(url)
     return create_json(data)
-
-if __name__ == '__main__':
-    partidos = get_partidos()
-    print partidos
-
-    
+        

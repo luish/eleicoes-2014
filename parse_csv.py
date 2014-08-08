@@ -1,30 +1,53 @@
 import csv
 import json
+import urllib2
 
-folder = 'data/candidatos/csv/MG/'
-filename = folder + 'governador.csv'
+estados = ["AC","AL","AP","AM","BA","CE","DF","ES","GO","MA","MT","MS","MG","PA","PB","PR","PE","PI","RJ","RN","RS","RO","RR","SC","SP","SE","TO"]
+#cargos = ["gov","vice_gov","sen","sen_sup_1","sen_sup_2","dep_fed","dep_est"]
+cargos = ["gov", "sen"]
 
-with open(filename, 'rb') as f:
-    r = csv.reader(f, delimiter=';', quotechar='|')
-    data = []
-    indexes = None
+folder = 'data/candidatos/csv/'
 
-    i = 0
-    for row in r:
-        if i == 0:
-            indexes = row
-        else:
-            if indexes:
-                j = 0
-                d = {}
-                for index in indexes:
-                    if (j == len(indexes) - 1)  or j == 4:
-                        d[indexes[j]] = row[j]
-                    else:
-                        d[indexes[j]] = row[j].decode('utf-8').lower().title()
-                    j += 1
-                
-                data.append(d)
-        i += 1
+def get_item_data(estado, cargo):
+    filename = folder + estado + '/' + cargo + '.csv'
+    
+    with open(filename, 'rb') as f:
+        r = csv.reader(f, delimiter=';', quotechar='|')
+        data = []
+        indexes = None
 
-    print json.dumps(data)
+        i = 0
+        for row in r:
+            if i > 0:
+                data.append(row)
+            i += 1
+
+        return data
+
+def create_item_dict(array):
+    dic = {}
+    if (len(array) == 7):
+        dic = {
+            'nome': array[0].decode('utf-8').lower().title(),
+            'nome_urna': array[1].decode('utf-8').lower().title(),
+            'cargo': array[2].decode('utf-8').lower().title(),
+            'numero': array[3],
+            'partido': array[4],
+            'situacao': array[5].decode('utf-8').lower().title(),
+            'coligacao': array[6].decode('utf-8')
+        }
+
+        return dic;
+
+    return None
+
+def get_candidates(estado, cargo):
+    array = get_item_data(estado, cargo)
+    candidates = []
+
+    for cand in array:
+        dic = create_item_dict(cand)
+        if dic:
+            candidates.append(dic)
+
+    return json.dumps(candidates)
