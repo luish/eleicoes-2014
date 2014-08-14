@@ -1,10 +1,8 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 import csv
 import json
-import urllib2
-
-estados = ["AC","AL","AP","AM","BA","CE","DF","ES","GO","MA","MT","MS","MG","PA","PB","PR","PE","PI","RJ","RN","RS","RO","RR","SC","SP","SE","TO"]
-#cargos = ["gov","vice_gov","sen","sen_sup_1","sen_sup_2","dep_fed","dep_est"]
-cargos = ["gov", "sen"]
 
 folder = 'data/candidatos/csv/'
 
@@ -34,7 +32,7 @@ def create_item_dict(array):
             'numero': array[3],
             'partido': array[4],
             'situacao': array[5].decode('utf-8').lower().title(),
-            'coligacao': array[6].decode('utf-8')
+            'coligacao': None if array[4] == array[6] else array[6].decode('utf-8').lower().title()
         }
 
         return dic;

@@ -2,10 +2,9 @@
 # -*- coding: utf-8 -*-
 
 from HTMLParser import HTMLParser
-import urllib, urllib2
+import urllib
 import re
 import json
-import pprint
 
 
 class PartidosHTMLParser(HTMLParser):
